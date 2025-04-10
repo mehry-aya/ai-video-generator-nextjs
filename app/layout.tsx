@@ -4,6 +4,7 @@ import "./globals.css";
 import TopNav from "@/components/nav/top-nav";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { VideoProvider } from "@/context/video";
 
 const audiowide = Audiowide({
   variable: "--font-audiowide",
@@ -33,8 +34,10 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
           >
+        <VideoProvider>
         <TopNav />
         {children}
+        </VideoProvider>
         </ThemeProvider>
 
       </body>

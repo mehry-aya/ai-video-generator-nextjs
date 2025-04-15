@@ -20,7 +20,7 @@ export const storyOptions: StoryOption[] = [
    ];
    export const styleOptions: StyleOption[] = [
     { name: "Artistic", image: "/images/artistic.jpg" },
-    { name: "Realistic", image: "/images/realistic.jpg" },
+    { name: "Realistic", image: "/images/realistic.png" },
     { name: "Fantasy", image: "/images/fantasy.jpg" },
     { name: "Dark", image: "/images/dark.jpg" },
     { name: "Water color", image: "/images/watercolor.jpg" },

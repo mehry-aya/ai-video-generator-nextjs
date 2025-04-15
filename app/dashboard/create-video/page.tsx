@@ -21,31 +21,62 @@ export default function CreateVideo() {
                         <div key={story.label} className="h-auto">
                             {story.type === "custom" ? (
                                 <>
-                                <input
-                                    type="text"
-                                    placeholder="Enter your custom prompt"
-                                    value={customPrompt}
-                                    onChange={handleCustomPromptChange}
-                                    className={`h-12 w-full bg-gray-700 text-white border-2 ${
-                                        selectedStory === "Custom Prompt" 
-                                        ? "border-blue-500"
-                                        : "border-gray-500"
-                                        } focus:ring-blue-500 focus:border-blue-500 rounded-lg p-2`}
-                                />
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your custom prompt"
+                                        value={customPrompt}
+                                        onChange={handleCustomPromptChange}
+                                        className={`h-12 w-full bg-gray-700 text-white border-2 ${selectedStory === "Custom Prompt"
+                                                ? "border-blue-500"
+                                                : "border-gray-600"
+                                            } focus:ring-blue-500 focus:border-blue-500`}
+                                    />
                                 </>
                             ) : (
                                 <Button
                                     onClick={() => handleStorySelect(story.label)}
                                     variant="outline"
-                                    className={`h-12 w-full text-xs sm:text-sm lg:text-base xl:text-lg py-1 px-2 ${
-                                        selectedStory === story.label 
-                                        ? "bg-blue-500 text-white border-blue-500 hover:bg-blue-600 hover:text-white" 
-                                        : "bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600 hover:text-white"
+                                    className={`h-12 w-full text-xs sm:text-sm lg:text-base xl:text-lg py-1 px-2 ${selectedStory === story.label
+                                            ? "bg-blue-500 text-white border-blue-500 hover:bg-blue-600 hover:text-white"
+                                            : "bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600 hover:text-white"
                                         }`}
                                 >
                                     <span className="line-clamp-2">{story.label}</span>
                                 </Button>
                             )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+
+            {/* Style Options */}
+            <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">
+                    Select A Video Style
+                </h2>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {styleOptions.map((style) => (
+                        <div key={style.name} onClick={() => handleStyleSelect(style.name)}
+                            className={`relative cursor-pointer rounded-lg transition-all duration-200 aspect-square overflow-hidden ${selectedStyle === style.name
+                                    ? "ring-4 ring-blue-500 ring-offset-4 ring-offset-gray-800"
+                                    : "hover:scale-105"
+                                }`}>
+                            <Image
+                                src={style.image}
+                                alt={style.name}
+                                fill
+                                style={{ objectFit: "cover" }}
+                                className={` transition-transform duration-200 ${selectedStyle === style.name ? "scale-105" : ""
+
+                                    }`}
+                            />
+
+                            <div className={`absolute inset-0 flex items-center justify-center transiton-opacity duration-200 ${selectedStyle === style.name
+                                    ? "bg-transparent" : "bg-black/40"}`}
+                            >
+                                <span className="font-semibold text-white text-lg">{style.name}</span>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -58,37 +89,6 @@ export default function CreateVideo() {
             >
                 Create Video
             </Button>
-
-            {/* Style Options */}
-            <div className="mb-8">
-                <h2 className="text-lg font-semibold mb-4">
-                    Select A Video Style
-                </h2>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    {styleOptions.map((style) =>(
-                        <div key ={style.name} onClick={() => handleStyleSelect(style.name)} 
-                        className={`relative cursor-pointer rounded-lg transition-all duration-200 aspect-square overflow-hidden ${
-                            selectedStyle === style.name 
-                            ? "ring-4 ring-blue-500 ring-offset-4 ring-offset-gray-800" 
-                            : "hover:scale-105"
-                            }`}>
-                                <Image src={style.image} alt={style.name} layout="fill" objectFit="cover"
-                                className={` transition-transform duration-200 ${
-                                    selectedStyle === style.name ? "scale-105" : ""
-
-                                }`}
-                                />
-
-                                <div className={`absolute inset-0 flex items-center justify-center transiton-opacity duration-200 ${
-                                    selectedStyle === style.name 
-                                  ? "bg-transparent" : "bg-black bg-opacity-40"}`}
-                                 >
-                                 <span className="font-semibold text-white text-lg">{style.name}</span>
-                                </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </div>
     );
 

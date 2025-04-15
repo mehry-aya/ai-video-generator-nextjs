@@ -5,9 +5,10 @@ import { createAiVideo } from "@/actions/geminiai";
 import { Button } from "@/components/ui/button";
 import { storyOptions, styleOptions } from "@/constants";
 import Image from "next/image";
+import { Loader2Icon } from "lucide-react";
 
 export default function CreateVideo() {
-    const { selectedStory, selectedStyle, customPrompt, handleStorySelect, handleStyleSelect, handleCustomPromptChange, handleSubmit } = useVideo();
+    const { selectedStory, selectedStyle, customPrompt, handleStorySelect, handleStyleSelect, handleCustomPromptChange, handleSubmit, loading } = useVideo();
     return (
         <div className="p-10 bg-gray-800 text-white">
             <h1 className="text-2xl font-bold mb-5">Create Video</h1>
@@ -87,6 +88,7 @@ export default function CreateVideo() {
                 disabled={(!selectedStory && !customPrompt) || !selectedStyle}
                 className="w-full h-12 bg-green-500 text-white text-lg rounded hover:bg-green-600"
             >
+                { loading && <Loader2Icon size={24} className="mr-4 animate-spin" />} {" "} 
                 Create Video
             </Button>
         </div>

@@ -9,6 +9,8 @@ import {
     ChangeEvent,
 } from "react";
 
+import { createAiVideo } from "@/actions/geminiai";
+
 const initialState = {
     script: "script....",
     images: [] as string[],
@@ -52,6 +54,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     const [audio, setAudio] = useState(initialState.audio); // google cloud text-to-speech
     const [captions, setCaptions] = useState(initialState.captions); //assemblyai
     const [loading, setLoading] = useState(initialState.loading);
+    const [loadingMessage, setLoadingMessage] = useState("")
     // add state to create a new video
     const [selectedStory, setSelectedStory] = useState("");
     const [selectedStyle, setSelectedStyle] = useState("");
@@ -72,14 +75,37 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         setSelectedStory("Custom Prompt");
     };
 
-    const handleSubmit = () => {
-        const videoData = {
-            story: selectedStory || "Custom Prompt",
-            style: selectedStyle,
-            prompt: customPrompt || selectedStory,
-        };
-        // createVideoAi(videoData);
-        console.log(videoData); // For testing purposes
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            setLoadingMessage("Generating video script...");
+
+            //Step 1: Create video script
+            const videoResponse: any = await createAiVideo(
+                `Create a 30 second long 
+                ${customPrompt || selectedStory
+                } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'contentText' fields.`
+            );
+
+            if (!videoResponse.success) {
+                setLoading(false);
+                setLoadingMessage("Failed to generate video script");
+            }
+            console.log("Video Response: ", videoResponse);
+            // Step 2: Create video images
+            // Step 3: Save Images to Cloudinary
+            // Step 4: Convert Script to Speech using Google Cloud
+            // Step 5: Save Audio to Cloudinary
+            // Step 6: Generate Captions from Audio using Assembly AI
+
+
+        } catch (error) {
+            setLoading(false); // Remove the loading toast
+        } finally {
+            setLoading(false);
+
+        }
+
     };
 
 

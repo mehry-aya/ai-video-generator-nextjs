@@ -40,12 +40,14 @@ export async function createAiVideo(message: string = defaultMessage) {
     try {
         jsonResponse = JSON.parse(cleanedResponse);
         console.log(`Response: ${jsonResponse}`);
+        return {
+            success: true,
+            data: jsonResponse,
+        }
 
     } catch (error) {
-        console.error("Error parsing JSON:", error);
+        jsonResponse = cleanedResponse;
     }
-    console.log(jsonResponse);
-    return jsonResponse;
 
 }
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { storyOptions, styleOptions } from "@/constants";
 import Image from "next/image";
 import { Loader2Icon } from "lucide-react";
-
+import LoadingModal from "@/components/modal/loading";
 export default function CreateVideo() {
     const { selectedStory, selectedStyle, customPrompt, handleStorySelect, handleStyleSelect, handleCustomPromptChange, handleSubmit, loading } = useVideo();
     return (
@@ -91,6 +91,9 @@ export default function CreateVideo() {
                 { loading && <Loader2Icon size={24} className="mr-4 animate-spin" />} {" "} 
                 Create Video
             </Button>
+            {/* Loading Spinner */}
+            <LoadingModal />;
+
         </div>
     );
 

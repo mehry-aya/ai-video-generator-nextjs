@@ -29,6 +29,8 @@ interface VideoContextType {
     audio: string;
     captions: object[];
     loading: boolean;
+    loadingMessage: string;
+    setLoadingMessage: Dispatch<SetStateAction<string>>;
     setScript: Dispatch<SetStateAction<string>>;
     setImages: Dispatch<SetStateAction<string[]>>;
     setAudio: Dispatch<SetStateAction<string>>;
@@ -122,6 +124,8 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
                 setAudio,
                 setCaptions,
                 setLoading,
+                loadingMessage,
+                setLoadingMessage,
                 selectedStory,
                 selectedStyle,
                 customPrompt,
@@ -129,7 +133,6 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
                 handleStyleSelect,
                 handleCustomPromptChange,
                 handleSubmit,
-
             }}
         >
             {children}

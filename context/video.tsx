@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { createAiVideo } from "@/actions/geminiai";
+import { generateImageAi } from "@/actions/replicateai";
 
 const initialState = {
     script: "script....",
@@ -44,6 +45,12 @@ interface VideoContextType {
     handleCustomPromptChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: () => void;
 }
+
+interface VideoScriptItem {
+    imagePrompt: string;
+    textContent: string;
+}
+
 // create context
 const VideoContext = createContext<VideoContextType | undefined>(
     undefined
@@ -94,6 +101,23 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
                 setLoadingMessage("Failed to generate video script");
             }
             console.log("Video Response: ", videoResponse);
+            if (videoResponse.data.length >= 1) {
+                setLoadingMessage("Generating images from the script...");
+                const imageFenerationPromises = videoResponse.data.map(async (item: VideoScriptItem) => {
+                    try {
+                        const imageUrl = await generateImageAi(item.imagePrompt);
+                        return imageUrl;
+                    } catch (error) {
+                        console.error("Error generating image: ", error);
+                        return null; // Return null in case of error
+                    }
+                });
+                const images = await Promise.all(imageFenerationPromises);
+                const validImages = images.filter((image) => image !== null); // Filter out null values
+                setImages(validImages);
+            }
+
+
             // Step 2: Create video images
             // Step 3: Save Images to Cloudinary
             // Step 4: Convert Script to Speech using Google Cloud
@@ -102,10 +126,11 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
 
 
         } catch (error) {
-            setLoading(false); // Remove the loading toast
+            console.error(error);
+            setLoadingMessage("failed to generate video script");
         } finally {
             setLoading(false);
-
+            setLoadingMessage("");
         }
 
     };

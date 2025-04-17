@@ -67,16 +67,3 @@ export async function generateImageAi(imagePrompt: string) {
     }
 } 
 
-/**
- * // once you see the images response, put in state to avoid generating more
-during development
-const aiImages = [
-
-
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924374/ai_video_images/7G0LhI3BmNl9t7cI2f7-G.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924420/ai_video_images/VAtXnYcD43aWjogZKZyuI.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924445/ai_video_images/aoytCGQc4MBVIqHvp-2mI.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924473/ai_video_images/DerU3UcZLCXx1QgBAlGOH.png"
-]
-
- */

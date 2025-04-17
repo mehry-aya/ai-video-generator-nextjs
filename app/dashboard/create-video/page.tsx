@@ -92,7 +92,7 @@ export default function CreateVideo() {
                 Create Video
             </Button>
             {/* Loading Spinner */}
-            <LoadingModal />;
+            <LoadingModal />
             <pre>{JSON.stringify(images, null, 4)}</pre>
         </div>
     );

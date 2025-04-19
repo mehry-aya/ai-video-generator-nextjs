@@ -11,6 +11,7 @@ import {
 
 import { createAiVideo } from "@/actions/geminiai";
 import { generateImageAi } from "@/actions/replicateai";
+import { generateAudio } from "@/actions/googlecloud";
 
 const aiVideoScript =
     [
@@ -169,12 +170,12 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         try {
             setLoading(true);
             // Create video script
-            const videoScript:any = await generateVideoScript();
+            const videoScript: any = await generateVideoScript();
             await generateImages(videoScript);
-           
-        }catch(error) {
+            const audioUrl = await generateAudioFile(videoScript);
+        } catch (error) {
             console.error(error);
-        }finally {
+        } finally {
             setLoading(false);
             setLoadingMessage("");
         }
@@ -198,6 +199,30 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
             }, 5000);
         });
     };
+
+    // context
+    const generateAudioFile = async (
+        videoResponse: any
+    ): Promise<string | undefined> => {
+        setLoading(true);
+        setLoadingMessage("Generating audio file...");
+        try {
+            // Use .map() to create an array of text items and join them into a single string
+            const script = videoResponse
+                .map((item: { contentText: string }) => item.contentText) // Extract the text field from each item
+                .join(" "); // Join the array into a single string with spaces
+            console.log("script to generate audio => ", script);
+            const data: any = await generateAudio(script);
+            console.log("audio generated!", data);
+            setAudio(data.url);
+            return data.url;
+          
+        } catch (err) {
+            console.error("Error generating audio file:", err);
+            return undefined; // Return undefined in case of error
+        }
+    };
+
     return (
         <VideoContext.Provider
             value={{

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Loader2Icon } from "lucide-react";
 import LoadingModal from "@/components/modal/loading";
 export default function CreateVideo() {
-    const { selectedStory, selectedStyle, customPrompt, handleStorySelect, handleStyleSelect, handleCustomPromptChange, handleSubmit, loading, images } = useVideo();
+    const { selectedStory, selectedStyle, customPrompt, handleStorySelect, handleStyleSelect, handleCustomPromptChange, handleSubmit, loading, images, audio, captions } = useVideo();
     return (
         <div className="p-10 bg-gray-800 text-white">
             <h1 className="text-2xl font-bold mb-5">Create Video</h1>
@@ -94,6 +94,8 @@ export default function CreateVideo() {
             {/* Loading Spinner */}
             <LoadingModal />
             <pre>{JSON.stringify(images, null, 4)}</pre>
+            <pre>{JSON.stringify(audio, null, 4)}</pre>
+            <pre>{JSON.stringify(captions, null, 4)}</pre>
         </div>
     );
 

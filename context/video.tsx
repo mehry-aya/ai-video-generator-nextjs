@@ -12,6 +12,7 @@ import {
 import { createAiVideo } from "@/actions/geminiai";
 import { generateImageAi } from "@/actions/replicateai";
 import { generateAudio } from "@/actions/googlecloud";
+import { generateCaptions } from "@/actions/assemblyai";
 
 const aiVideoScript =
     [
@@ -79,7 +80,7 @@ interface VideoContextType {
 
 interface VideoScriptItem {
     imagePrompt: string;
-    textContent: string;
+    contentText: string;
 }
 
 // create context
@@ -173,6 +174,9 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
             const videoScript: any = await generateVideoScript();
             await generateImages(videoScript);
             const audioUrl = await generateAudioFile(videoScript);
+            const captionsArray = await generateCaptionsArray(audioUrl);
+            console.log("captions array => ", captionsArray);
+            
         } catch (error) {
             console.error(error);
         } finally {
@@ -212,16 +216,33 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
                 .map((item: { contentText: string }) => item.contentText) // Extract the text field from each item
                 .join(" "); // Join the array into a single string with spaces
             console.log("script to generate audio => ", script);
-            const data: any = await generateAudio(script);
-            console.log("audio generated!", data);
-            setAudio(data.url);
-            return data.url;
-          
+            // const data: any = await generateAudio(script);
+            // console.log("audio generated!", data);
+            // setAudio(data.url);
+            // return data.url;
+
+            const url = "https://res.cloudinary.com/dcx5ardvm/video/upload/v1745082026/_gitop.mp3";
+            setAudio(url);
+            return url;
+
         } catch (err) {
             console.error("Error generating audio file:", err);
             return undefined; // Return undefined in case of error
         }
     };
+
+    const generateCaptionsArray = async (audioUrl: any) => {
+        setLoadingMessage("Generating captions from audio...");
+
+        try {
+            const captionsArray = await generateCaptions(audioUrl);
+            setCaptions(captionsArray);
+            return captionsArray;
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
 
     return (
         <VideoContext.Provider

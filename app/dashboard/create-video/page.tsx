@@ -32,8 +32,8 @@ export default function CreateVideo() {
                                                     value={customPrompt}
                                                     onChange={handleCustomPromptChange}
                                                     className={`h-12 w-full bg-gray-700 text-white border-2 text-xs ${selectedStory === "Custom Prompt"
-                                                            ? "border-blue-500"
-                                                            : "border-gray-600"
+                                                        ? "border-blue-500"
+                                                        : "border-gray-600"
                                                         } focus:ring-blue-500 focus:border-blue-500`}
                                                 />
                                             </>
@@ -42,8 +42,8 @@ export default function CreateVideo() {
                                                 onClick={() => handleStorySelect(story.label)}
                                                 variant="outline"
                                                 className={`h-12 w-full bg-gray-700 text-white border-2 text-xs ${selectedStory === story.label
-                                                        ? "bg-blue-500 text-white border-blue-500"
-                                                        : "bg-gray-700 text-gray-300 border-gray-600"
+                                                    ? "bg-blue-500 text-white border-blue-500"
+                                                    : "bg-gray-700 text-gray-300 border-gray-600"
                                                     }`}
                                             >
                                                 <span className="line-clamp-2">{story.label}</span>
@@ -100,11 +100,17 @@ export default function CreateVideo() {
                         <pre>{JSON.stringify(images, null, 4)}</pre>
                         <pre>{JSON.stringify(audio, null, 4)}</pre>
                         <pre>{JSON.stringify(captions, null, 4)}</pre>
-                    </div>                </div>
-                <div className="flex justify-center items-center vh-100 order-1 lg:order-2">
-                    <div className="flex justify-center p-10">
-                        <RemotionPlayer />
+                    </div>                
                     </div>
+                <div className="flex justify-center items-center vh-100 order-1 lg:order-2">
+                    {images && audio && captions ? (
+                        <div className="flex justify-center p-10">
+                            <RemotionPlayer />
+                        </div>
+                    ) : (
+                        <p className="text-center my-10">No Video data</p>
+                    )}
+
                 </div>
             </div>
 

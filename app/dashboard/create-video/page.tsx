@@ -97,9 +97,9 @@ export default function CreateVideo() {
                         </Button>
                         {/* Loading Spinner */}
                         <LoadingModal />
-                        <pre>{JSON.stringify(images, null, 4)}</pre>
+                        {/* <pre>{JSON.stringify(images, null, 4)}</pre>
                         <pre>{JSON.stringify(audio, null, 4)}</pre>
-                        <pre>{JSON.stringify(captions, null, 4)}</pre>
+                        <pre>{JSON.stringify(captions, null, 4)}</pre> */}
                     </div>                
                     </div>
                 <div className="flex justify-center items-center vh-100 order-1 lg:order-2">

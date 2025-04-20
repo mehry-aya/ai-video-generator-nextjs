@@ -13,7 +13,7 @@ import { createAiVideo } from "@/actions/geminiai";
 import { generateImageAi } from "@/actions/replicateai";
 import { generateAudio } from "@/actions/googlecloud";
 import { generateCaptions } from "@/actions/assemblyai";
-
+import { saveVideoToDatabase } from "@/actions/mongodb";
 // const aiVideoScript =
 //     [
 //         {
@@ -179,6 +179,14 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
 
             if (videoScript && images && audioUrl && captions) {
                 // save to db
+                setLoadingMessage("Saving video to database...");
+                await saveVideoToDatabase({
+                    videoScript,
+                    images,
+                    audioUrl,
+                    captions,
+                })
+                setLoadingMessage("Video saved successfully!");
             }
             setLoadingMessage("Your video is ready for preview...")
         } catch (error) {
@@ -195,7 +203,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
             // Step 1: Create video script
             const videoResponse: any = await createAiVideo(
                 `Create a 10 second long ${customPrompt || selectedStory
-                } video script with 2 scenes. Include AI image prompts in ${selectedStyle} format for each scene. Provide the result in JSON format with 'imagePrompt' and 'contentText' fields.`
+                } video script with 2 scenes. Include AI image prompts in ${selectedStyle} format for each scene. Provide the result in JSON format with 'imagePrompt' and 'contentText' fields. Ensure 'textContent' field has only the story text.` 
             );
             // console.log("videoResponse ==============> ", videoResponse);
             // Step 2: Check if videoResponse was successful

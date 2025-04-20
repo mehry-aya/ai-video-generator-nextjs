@@ -1,10 +1,11 @@
+"use client";
 import { useVideo } from '@/context/video';
 import React from 'react'
 import { AbsoluteFill, Sequence, Img, useVideoConfig, Audio, useCurrentFrame, interpolate } from 'remotion'
 
 
-export default function RemotionVideo() {
-  const { images, audio, captions } = useVideo();
+export default function RemotionVideo({ images = [], audio = '', captions = [] }: any) {
+  const { images: videoImages, audio: videoAudio, captions: videoCaptions } = useVideo();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -63,7 +64,7 @@ export default function RemotionVideo() {
 
   return (
     <AbsoluteFill>
-      {images.map((image, index) => {
+      {images.map((image:any, index:any) => {
         // Calculate the start and end frames for this image
         const startFrame = (index * totalDuration) / images.length;
         const endFrame = startFrame + totalDuration;

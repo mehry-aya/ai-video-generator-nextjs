@@ -14,33 +14,33 @@ import { generateImageAi } from "@/actions/replicateai";
 import { generateAudio } from "@/actions/googlecloud";
 import { generateCaptions } from "@/actions/assemblyai";
 
-const aiVideoScript =
-    [
-        {
-            imagePrompt: 'A lone, weathered adventurer stands on a cliff overlooking a vast, mystical forest, bathed in the golden light of a setting sun. The adventurer is clad in worn leather armor, carrying a sword and a backpack.',
-            contentText: "The wind whipped at Elara's cloak, carrying the scent of pine and magic. Below, the Whispering Woods stretched out like a tapestry of emerald and gold, a place of ancient secrets and whispered dangers."
-        },
-        {
-            imagePrompt: "A close-up of the adventurer's hand, gripping a worn leather-bound journal. The pages are filled with cryptic symbols and sketches of fantastical creatures.",
-            contentText: "She opened her journal, its pages filled with the scribbles of her travels. The map she'd been given pointed to a hidden temple within the woods, rumored to hold the key to a lost power."
-        },
-        {
-            imagePrompt: 'The adventurer cautiously steps into the shadowy depths of the forest. The trees are gnarled and ancient, their branches reaching out like grasping claws. Strange, luminous mushrooms illuminate the path.',
-            contentText: 'With a deep breath, Elara stepped into the forest. The air grew heavy with the scent of damp earth and the faint, metallic tang of magic.'
-        },
-        {
-            imagePrompt: 'A shadowy figure emerges from behind a giant, mosscovered tree. The figure is shrouded in a cloak, holding a glowing staff. The adventurer draws her sword.',
-            contentText: 'A sudden rustle in the undergrowth made her jump. A cloaked figure emerged from the shadows, a staff glowing in their hand. Elara gripped her sword, ready for a fight.'
-        }
-    ];
-// once you see the images response, put in state to avoid generating more during development
-const aiImages = [
+// const aiVideoScript =
+//     [
+//         {
+//             imagePrompt: 'A lone, weathered adventurer stands on a cliff overlooking a vast, mystical forest, bathed in the golden light of a setting sun. The adventurer is clad in worn leather armor, carrying a sword and a backpack.',
+//             contentText: "The wind whipped at Elara's cloak, carrying the scent of pine and magic. Below, the Whispering Woods stretched out like a tapestry of emerald and gold, a place of ancient secrets and whispered dangers."
+//         },
+//         {
+//             imagePrompt: "A close-up of the adventurer's hand, gripping a worn leather-bound journal. The pages are filled with cryptic symbols and sketches of fantastical creatures.",
+//             contentText: "She opened her journal, its pages filled with the scribbles of her travels. The map she'd been given pointed to a hidden temple within the woods, rumored to hold the key to a lost power."
+//         },
+//         {
+//             imagePrompt: 'The adventurer cautiously steps into the shadowy depths of the forest. The trees are gnarled and ancient, their branches reaching out like grasping claws. Strange, luminous mushrooms illuminate the path.',
+//             contentText: 'With a deep breath, Elara stepped into the forest. The air grew heavy with the scent of damp earth and the faint, metallic tang of magic.'
+//         },
+//         {
+//             imagePrompt: 'A shadowy figure emerges from behind a giant, mosscovered tree. The figure is shrouded in a cloak, holding a glowing staff. The adventurer draws her sword.',
+//             contentText: 'A sudden rustle in the undergrowth made her jump. A cloaked figure emerged from the shadows, a staff glowing in their hand. Elara gripped her sword, ready for a fight.'
+//         }
+//     ];
+// //once you see the images response, put in state to avoid generating more during development
+// const aiImages = [
 
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924374/ai_video_images/7G0LhI3BmNl9t7cI2f7-G.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924420/ai_video_images/VAtXnYcD43aWjogZKZyuI.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924445/ai_video_images/aoytCGQc4MBVIqHvp-2mI.png",
-    "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924473/ai_video_images/DerU3UcZLCXx1QgBAlGOH.png"
-]
+//     "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924374/ai_video_images/7G0LhI3BmNl9t7cI2f7-G.png",
+//     "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924420/ai_video_images/VAtXnYcD43aWjogZKZyuI.png",
+//     "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924445/ai_video_images/aoytCGQc4MBVIqHvp-2mI.png",
+//     "https://res.cloudinary.com/dcx5ardvm/image/upload/v1744924473/ai_video_images/DerU3UcZLCXx1QgBAlGOH.png"
+// ]
 
 
 
@@ -172,58 +172,115 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
             setLoading(true);
             // Create video script
             const videoScript: any = await generateVideoScript();
-            await generateImages(videoScript);
+            const images = await generateImages(videoScript);
             const audioUrl = await generateAudioFile(videoScript);
-            const captionsArray = await generateCaptionsArray(audioUrl);
-            console.log("captions array => ", captionsArray);
-            
+            const captions = await generateCaptionsArray(audioUrl);
+            // console.log("captions array => ", captions);
+
+            if (videoScript && images && audioUrl && captions) {
+                // save to db
+            }
+            setLoadingMessage("Your video is ready for preview...")
         } catch (error) {
             console.error(error);
+            setLoadingMessage("Failed to generate video script");
         } finally {
             setLoading(false);
-            setLoadingMessage("");
         }
     }
 
     const generateVideoScript = async () => {
-        setLoadingMessage("Generating video Script...");
-        return new Promise((resolve) => {
+        try {
+            setLoadingMessage("Generating video script...");
+            // Step 1: Create video script
+            const videoResponse: any = await createAiVideo(
+                `Create a 10 second long ${customPrompt || selectedStory
+                } video script with 2 scenes. Include AI image prompts in ${selectedStyle} format for each scene. Provide the result in JSON format with 'imagePrompt' and 'contentText' fields.`
+            );
+            // console.log("videoResponse ==============> ", videoResponse);
+            // Step 2: Check if videoResponse was successful
+            if (!videoResponse.success) {
+                setLoadingMessage("Failed to generate video script.");
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
+                return null; // Return null on failure to indicate the operation failed
+            }
+            // Step 3: Optionally handle further processing, like generating images
+            // Return the successful videoResponse
+            return videoResponse;
+        } catch (error) {
+            console.error("Error generating video script:", error);
+            setLoadingMessage("Error generating video script.");
             setTimeout(() => {
-                resolve(aiVideoScript);
-            }, 2000);
-        });
+                setLoading(false);
+            }, 1000);
+        }
     };
 
-    const generateImages = async (videoResponse: VideoScriptItem[]) => {
+    // const generateImages = async (videoResponse: VideoScriptItem[]) => {
+    //     setLoadingMessage("Generating images from the script...");
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             setImages(aiImages);
+    //             resolve(aiImages);
+    //         }, 5000);
+    //     });
+    // };
+
+    const generateImages = async (videoResponse: any) => {
         setLoadingMessage("Generating images from the script...");
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                setImages(aiImages);
-                resolve(aiImages);
-            }, 5000);
-        });
+        try {
+            // Video response is successful, proceed to image generation
+            const imageGenerationPromises: Promise<string | null>[] = videoResponse.data.map(
+                async (item: VideoScriptItem): Promise<string | null> => {
+                    try {
+                        // Capture the result of generateImageAi and return it
+                        const imageUrl: string = await generateImageAi(item.imagePrompt);
+                        return imageUrl; // Ensure the image URL is returned
+                    } catch (error) {
+                        console.error("Error generating image:", error);
+                        return null; // Handle failure gracefully for a single image
+                    }
+                }
+            );
+            // Wait for all images to be generated
+            const images: (string | null)[] = await Promise.all(imageGenerationPromises);
+            // Filter out any null values in case some images failed
+            const validImages: string[] = images.filter((image) => image !== null);
+            // if (validImages.length === 0) {
+            //     setLoadingMessage("Failed to generate images.");
+            //     setLoading(false);
+            //     return;
+            // }
+            console.log("Valid images: ", validImages);
+            setImages(validImages);
+            return validImages;
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    // context
+
     const generateAudioFile = async (
-        videoResponse: any
+        videoScript: any
     ): Promise<string | undefined> => {
         setLoading(true);
         setLoadingMessage("Generating audio file...");
         try {
             // Use .map() to create an array of text items and join them into a single string
-            const script = videoResponse
+            const script = videoScript.data
                 .map((item: { contentText: string }) => item.contentText) // Extract the text field from each item
                 .join(" "); // Join the array into a single string with spaces
             console.log("script to generate audio => ", script);
-            // const data: any = await generateAudio(script);
-            // console.log("audio generated!", data);
-            // setAudio(data.url);
-            // return data.url;
+            const data: any = await generateAudio(script);
+            console.log("audio generated!", data);
+            setAudio(data.url);
+            return data.url;
 
-            const url = "https://res.cloudinary.com/dcx5ardvm/video/upload/v1745082026/_gitop.mp3";
-            setAudio(url);
-            return url;
+            // const url = "https://res.cloudinary.com/dcx5ardvm/video/upload/v1745082026/_gitop.mp3";
+            // setAudio(url);
+            // return url;
 
         } catch (err) {
             console.error("Error generating audio file:", err);

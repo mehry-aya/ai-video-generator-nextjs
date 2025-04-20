@@ -10,7 +10,7 @@ export default function RemotionPlayer() {
     // Calculate total duration based on captions
     const totalDuration =
         captions.length > 0
-            ? Math.ceil((captions[captions.length - 1] as any).end / (1000 / 30)) + 30 // Add 30 frames for an additional second
+            ? Math.ceil((captions[captions.length - 1] as any).end / (1000 /30)) + 30 // Add 30 frames for an additional second
             : 1; // Default to 1 frame if no captions
     return (
         <div>
